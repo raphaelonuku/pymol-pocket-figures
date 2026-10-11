@@ -1,12 +1,12 @@
 # PyMOL Pocket Figures
 
-A small, original PyMOL extension for making labeled protein–ligand pocket figures from a **structure you load yourself**. It separates displayed residues into individual stick objects, colors a ligand in a thick ball-and-stick style, optionally draws geometric polar contacts, and saves the camera view directly to a high-resolution transparent PNG.
+A small PyMOL extension for making labeled protein–ligand pocket figures. It separates displayed residues into individual stick objects, colors a ligand in a thick ball-and-stick style, optionally draws geometric polar contacts, and saves the camera view directly to a high-resolution transparent PNG.
 
 The code contains no bundled structures, ligand coordinates, project results or fixed residue numbers. It was tested with PyMOL 3.1.1; other PyMOL versions may differ in available rendering settings.
 
 ## Quick start
 
-1. Load your prepared complex in PyMOL. Check that ligand bond orders are correct; a PDB alone may not preserve aromaticity or double-bond order, so use a chemically typed ligand file or verify the loaded connectivity where necessary.
+1. Load your prepared complex in PyMOL. Check that ligand bond orders are correct.
 2. In the PyMOL command line, run:
 
    ```text
@@ -54,8 +54,6 @@ For a second complex in the same session, run `pocket_figure` again with its obj
 One temporary PyMOL object is created for each displayed amino-acid residue. This suppresses peptide links **between displayed residue sticks** so individual side chains are easier to read. The original molecular object, coordinates and bonds are left intact. Residue labels use three-letter residue names plus numbers; a chain identifier is added automatically if two displayed chains have the same residue name and number. Labels are attached to the residue Cα atom where present.
 
 Amber dashes from `polar_contacts=yes` are PyMOL's geometric polar-contact suggestions. They are **not covalent bonds** and should be checked against atom types, hydrogen orientation and distances before a manuscript assigns specific hydrogen bonds. The tool does not calculate binding affinity or validate a docking pose.
-
-For accurate chemical depictions, inspect the structure before exporting: correct ligand identity and bond order, biological assembly, alternate conformers, atom naming, relevant cofactors and waters, and residue numbering. The script styles the supplied model; it does not repair it.
 
 ## Testing
 
