@@ -118,12 +118,12 @@ def pocket_figure(
 
     if str(residue_selection).strip().lower() == "auto":
         pocket_expr = (
-            f"byres ((({object_name}) and polymer.protein) "
+            f"byres ((({object_name}) and polymer.protein and not ({ligand_sel})) "
             f"within {residue_radius:g} of ({ligand_sel}))"
         )
     else:
         pocket_expr = (
-            f"byres ((({object_name}) and polymer.protein) "
+            f"byres ((({object_name}) and polymer.protein and not ({ligand_sel})) "
             f"and ({residue_selection}))"
         )
     cmd.select(pocket_sel, pocket_expr)
@@ -143,7 +143,8 @@ def pocket_figure(
 
     cmd.select(
         cartoon_sel,
-        f"byres ((({object_name}) and polymer.protein) within {cartoon_radius:g} of ({ligand_sel}))",
+        f"byres ((({object_name}) and polymer.protein and not ({ligand_sel})) "
+        f"within {cartoon_radius:g} of ({ligand_sel}))",
     )
     if isolate_enabled:
         cmd.disable("all")
@@ -203,6 +204,25 @@ def pocket_figure(
     cmd.set("valence", 1, ligand_sel)
     _style_atoms(ligand_sel, f"{tag}_ligand_cream")
     cmd.hide("everything", f"({ligand_sel}) and elem H")
+
+    # A peptide-like inhibitor can contain standard amino-acid residues and
+    # a true covalent link to the receptor (for example N3–Cys145 in 6LU7).
+    # Display those deposited cross-links as sticks in the original object.
+    ligand_indices = {atom.index for atom in cmd.get_model(ligand_sel).atom}
+    object_model = cmd.get_model(object_name)
+    bridge_indices = set()
+    for bond in object_model.bond:
+        first, second = (object_model.atom[index] for index in bond.index)
+        if (first.index in ligand_indices) == (second.index in ligand_indices):
+            continue
+        protein_atom = second if first.index in ligand_indices else first
+        if protein_atom.resn in {"HOH", "WAT"}:
+            continue
+        bridge_indices.update((first.index, second.index))
+        cmd.color(f"{tag}_protein_green", f"({object_name}) and index {protein_atom.index}")
+    if bridge_indices:
+        joined_indices = "+".join(str(index) for index in sorted(bridge_indices))
+        cmd.show("sticks", f"({object_name}) and index {joined_indices}")
 
     ligand_atoms = [atom for atom in cmd.get_model(ligand_sel).atom if atom.symbol.upper() != "H"]
     centroid = tuple(sum(atom.coord[axis] for atom in ligand_atoms) / len(ligand_atoms) for axis in range(3))
