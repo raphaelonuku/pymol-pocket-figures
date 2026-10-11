@@ -38,7 +38,7 @@ For a second complex in the same session, run `pocket_figure` again with its obj
 
 ```text
 run /path/to/pocketfigure.py
-pocket_figure 6LU7, chain C, residue_selection=chain A and resi 41+140+143+145+163+165+166+189, ligand_label=N3, polar_contacts=yes, prefix=example6lu7
+pocket_figure 6LU7, chain C, residue_selection=chain A and resi 41+140+143+145+163+165+166+189, ligand_label=N3, polar_contacts=yes
 ```
 
 Rotate the view, then export exactly that view:
