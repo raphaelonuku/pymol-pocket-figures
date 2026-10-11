@@ -1,12 +1,12 @@
 # PyMOL Pocket Figures
 
-A small PyMOL extension for making labeled protein–ligand pocket figures. It separates displayed residues into individual stick objects, colors a ligand in a thick ball-and-stick style, optionally draws geometric polar contacts, and saves the camera view directly to a high-resolution transparent PNG.
+A small, original PyMOL extension for making labeled protein–ligand pocket figures from a **structure you load yourself**. It separates displayed residues into individual stick objects, colors a ligand in a thick ball-and-stick style, optionally draws geometric polar contacts, and saves the camera view directly to a high-resolution transparent PNG.
 
 The code contains no bundled structures, ligand coordinates, project results or fixed residue numbers. It was tested with PyMOL 3.1.1; other PyMOL versions may differ in available rendering settings.
 
 ## Quick start
 
-1. Load your prepared complex in PyMOL. Check that ligand bond orders are correct.
+1. Load your prepared complex in PyMOL. Check that ligand bond orders are correct; a PDB alone may not preserve aromaticity or double-bond order, so use a chemically typed ligand file or verify the loaded connectivity where necessary.
 2. In the PyMOL command line, run:
 
    ```text
@@ -32,6 +32,23 @@ pocket_figure complex, resn LIG and chain A, residue_selection=chain A and resi 
 
 For a second complex in the same session, run `pocket_figure` again with its object and ligand selection. Each run receives a fresh prefix (`pf001`, `pf002`, ...). By default, other loaded objects are disabled so that the chosen complex is isolated in the figure; set `isolate=no` to preserve their visibility.
 
+## Worked example: PDB 6LU7
+
+[PDB 6LU7](https://www.rcsb.org/structure/6LU7) is SARS-CoV-2 main protease with the covalent inhibitor N3. In the deposited PDB file, N3 is **chain C spanning residues 1–6**, rather than a residue named `N3`; its PJE5 C20 atom is linked to protein Cys145 SG. With the PDB loaded as the PyMOL object `6LU7`, use:
+
+```text
+run /path/to/pocketfigure.py
+pocket_figure 6LU7, chain C, residue_selection=chain A and resi 41+140+143+145+163+165+166+189, ligand_label=N3, polar_contacts=yes, prefix=example6lu7
+```
+
+Rotate the view, then export exactly that view:
+
+```text
+pocket_save 6LU7_N3_pocket.png, 3600, 2700, 600
+```
+
+This eight-residue view is a compact visualization example, not a complete interaction inventory. The script excludes the selected ligand from the protein cartoon and residue sticks even when part of the inhibitor is typed as protein, and retains the deposited Cys145–N3 covalent link. The amber dashes are geometric polar-contact suggestions, distinct from that covalent bond. If your PyMOL object has another name, replace only `6LU7` in the command.
+
 ## Parameters
 
 | Parameter | Default | Purpose |
@@ -54,6 +71,8 @@ For a second complex in the same session, run `pocket_figure` again with its obj
 One temporary PyMOL object is created for each displayed amino-acid residue. This suppresses peptide links **between displayed residue sticks** so individual side chains are easier to read. The original molecular object, coordinates and bonds are left intact. Residue labels use three-letter residue names plus numbers; a chain identifier is added automatically if two displayed chains have the same residue name and number. Labels are attached to the residue Cα atom where present.
 
 Amber dashes from `polar_contacts=yes` are PyMOL's geometric polar-contact suggestions. They are **not covalent bonds** and should be checked against atom types, hydrogen orientation and distances before a manuscript assigns specific hydrogen bonds. The tool does not calculate binding affinity or validate a docking pose.
+
+For accurate chemical depictions, inspect the structure before exporting: correct ligand identity and bond order, biological assembly, alternate conformers, atom naming, relevant cofactors and waters, and residue numbering. The script styles the supplied model; it does not repair it.
 
 ## Testing
 
