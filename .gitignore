@@ -4,6 +4,7 @@ __pycache__/
 .DS_Store
 *.pse
 *.png
+!examples/6LU7_N3_pocket.png
 *.pdb
 *.cif
 *.sdf

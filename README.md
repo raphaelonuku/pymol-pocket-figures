@@ -34,6 +34,10 @@ For a second complex in the same session, run `pocket_figure` again with its obj
 
 ## Worked example: PDB 6LU7
 
+![N3 in the SARS-CoV-2 main protease pocket (PDB 6LU7)](examples/6LU7_N3_pocket.png)
+
+*Figure: User-rendered PyMOL view of deposited N3 in the 6LU7 main-protease pocket. Green sticks show the eight selected protein residues; cream ball-and-stick shows N3; amber dashes are PyMOL geometric polar-contact suggestions.*
+
 [PDB 6LU7](https://www.rcsb.org/structure/6LU7) is SARS-CoV-2 main protease with the covalent inhibitor N3. In the deposited PDB file, N3 is **chain C spanning residues 1–6**, rather than a residue named `N3`; its PJE5 C20 atom is linked to protein Cys145 SG. With the PDB loaded as the PyMOL object `6LU7`, use:
 
 ```text
